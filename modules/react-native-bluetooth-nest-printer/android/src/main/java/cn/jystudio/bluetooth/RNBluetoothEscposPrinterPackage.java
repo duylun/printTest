@@ -16,18 +16,27 @@ import com.facebook.react.bridge.JavaScriptModule;
 
 public class RNBluetoothEscposPrinterPackage implements ReactPackage {
     @Override
+    // public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+    //     BluetoothService service = new BluetoothService(reactContext);
+    //     return Arrays.<NativeModule>asList(new RNBluetoothManagerModule(reactContext, service),
+    //             new RNBluetoothEscposPrinterModule(reactContext, service),
+    //             new RNBluetoothTscPrinterModule(reactContext, service),
+    //             new RNNetPrinterModule(reactContext));
+    // }
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         BluetoothService service = new BluetoothService(reactContext);
-        return Arrays.<NativeModule>asList(new RNBluetoothManagerModule(reactContext, service),
+        return Arrays.asList(new NativeModule[]{
+                new RNBluetoothManagerModule(reactContext, service),
                 new RNBluetoothEscposPrinterModule(reactContext, service),
                 new RNBluetoothTscPrinterModule(reactContext, service),
-                new RNNetPrinterModule(reactContext));
+                new RNNetPrinterModule(reactContext)
+        });
     }
 
     // Deprecated from RN 0.47
-    public List<Class<? extends JavaScriptModule>> createJSModules() {
-        return Collections.emptyList();
-    }
+    // public List<Class<? extends JavaScriptModule>> createJSModules() {
+    //     return Collections.emptyList();
+    // }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {

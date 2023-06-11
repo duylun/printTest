@@ -7,17 +7,15 @@ package cn.jystudio.bluetooth.escpos.adapter;
 public class NetPrinterDeviceId extends PrinterDeviceId {
     private String host;
     private Integer port;
-
-    private NetPrinterDeviceId(String host, Integer port) {
-        this.host = host;
-        this.port = port;
-    }
     
     public static NetPrinterDeviceId valueOf(String host, Integer port) {
         return new NetPrinterDeviceId(host, port);
     }
 
-    
+    private NetPrinterDeviceId(String host, Integer port) {
+        this.host = host;
+        this.port = port;
+    }
 
     public String getHost() {
         return host;

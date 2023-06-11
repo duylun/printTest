@@ -81,7 +81,8 @@ public class NetPrinterAdapter implements PrinterAdapter {
         // printer");
         // Use emitter instancee get devicelist to non block main thread
         this.scan();
-        return new ArrayList<>();
+        List<PrinterDevice> printerDevices = new ArrayList<>();
+        return printerDevices;
     }
 
     private void scan() {
@@ -340,10 +341,10 @@ public class NetPrinterAdapter implements PrinterAdapter {
                 }
 
                 // Do a line feed, if not the printing will resume on the same line
-                printerOutputStream.write(LINE_FEED);
+                // printerOutputStream.write(LINE_FEED);
             }
-            printerOutputStream.write(SET_LINE_SPACE_32);
-            printerOutputStream.write(LINE_FEED);
+            // printerOutputStream.write(SET_LINE_SPACE_32);
+            // printerOutputStream.write(LINE_FEED);
 
             printerOutputStream.flush();
         } catch (IOException e) {

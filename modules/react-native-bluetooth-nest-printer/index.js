@@ -1,4 +1,5 @@
-import { NativeModules, NativeEventEmitter, Platform } from "react-native";
+import * as EPToolkit from '../../src/utils/EPToolkit'
+import { NativeModules, NativeEventEmitter, Platform, Alert } from "react-native";
 const { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter, RNNetPrinter } =
   NativeModules;
 
@@ -37,6 +38,24 @@ const textPreprocessingIOS = (text, canCut = true, beep = true) => {
   };
 };
 
+const textTo64Buffer = (text, opts = PrinterOptions) => {
+  const defaultOptions = {
+    beep: false,
+    cut: false,
+    tailingLine: false,
+    encoding: "UTF8",
+  };
+
+  const options = {
+    ...defaultOptions,
+    ...opts,
+  };
+
+  const fixAndroid = "\n";
+  const buffer = EPToolkit.exchange_text(text + fixAndroid, options);
+  return buffer.toString("base64");
+};
+
 // export interface INetPrinter {
 //   host: string;
 //   port: number;
@@ -56,14 +75,14 @@ const NetPrinter = {
     );
   }),
 
-  connectPrinter: (host, port, timeout) => new Promise(async (resolve, reject) => {
+  connectPrinter: (host, port) => new Promise(async (resolve, reject) => {
     try {
       // await connectToHost(host, timeout);
-      RNNetPrinter.connectPrinter(
+      await RNNetPrinter.connectPrinter(
         host,
         port,
-        (printer) => resolve(printer),
-        (error) => reject(error)
+        printer => resolve(printer),
+        error => reject(error)
       );
     } catch (error) {
       reject(error?.message || `Connect to ${host} fail`);
@@ -75,7 +94,7 @@ const NetPrinter = {
     resolve();
   }),
 
-  printText: (text, opts = PrinterOptions) => {
+  printText: (text, opts = {}) => {
     if (Platform.OS === "ios") {
       const processedText = textPreprocessingIOS(text, false, false);
       RNNetPrinter.printRawData(
@@ -84,7 +103,7 @@ const NetPrinter = {
         (error) => console.warn(error)
       );
     } else {
-      RNNetPrinter.printRawData(text, opts, (error) =>
+      RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error) =>
         console.warn(error)
       );
     }
@@ -126,14 +145,15 @@ const NetPrinter = {
   printImage: function (imgUrl, opts = {}) {
     if (Platform.OS === "ios") {
       RNNetPrinter.printImageData(imgUrl, opts, (error) =>
-        console.warn(error)
+        // console.warn(error)
+        Alert.alert('Thông báo!', 'Chưa kết nối với máy in, vui lòng kiểm tra lại!')
       );
     } else {
       RNNetPrinter.printImageData(
         imgUrl,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
-        (error) => console.warn(error)
+        (error) => Alert.alert('Thông báo!', 'Chưa kết nối với máy in, vui lòng kiểm tra lại!')
       );
     }
   },
@@ -141,14 +161,14 @@ const NetPrinter = {
   printImageBase64: function (Base64, opts = {}) {
     if (Platform.OS === "ios") {
       RNNetPrinter.printImageBase64(Base64, opts, (error) =>
-        console.warn(error)
+      Alert.alert('Thông báo!', 'Chưa kết nối với máy in, vui lòng kiểm tra lại!')
       );
     } else {
       RNNetPrinter.printImageBase64(
         Base64,
         opts?.imageWidth ?? 0,
         opts?.imageHeight ?? 0,
-        (error) => console.warn(error)
+        (error) => Alert.alert('Thông báo!', 'Chưa kết nối với máy in, vui lòng kiểm tra lại!')
       );
     }
   },
